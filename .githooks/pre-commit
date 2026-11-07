@@ -1,0 +1,4 @@
+#!/bin/sh
+# Blocks a commit that would track personal data, databases or keys.
+# Enable once per clone:  git config core.hooksPath .githooks
+exec python3 "$(git rev-parse --show-toplevel)/src/jobmatcher/privacy.py" "$(git rev-parse --show-toplevel)"

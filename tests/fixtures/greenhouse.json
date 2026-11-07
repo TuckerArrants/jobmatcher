@@ -1,0 +1,24 @@
+{
+  "jobs": [
+    {
+      "id": 1001,
+      "title": "Data Scientist, Clinical Imaging",
+      "absolute_url": "https://boards.greenhouse.io/examplebio/jobs/1001?gh_src=abc",
+      "first_published": "2026-11-01T12:00:00-05:00",
+      "updated_at": "2026-11-03T09:00:00-05:00",
+      "location": {"name": "Boston, MA | Remote - US"},
+      "offices": [{"name": "Boston"}],
+      "content": "&lt;h2&gt;About the role&lt;/h2&gt;&lt;p&gt;Build models on MRI data. Requires 3+ years of Python experience.&lt;/p&gt;&lt;h3&gt;Compensation&lt;/h3&gt;&lt;p&gt;The base salary range is $130,000 - $160,000 per year.&lt;/p&gt;&lt;h3&gt;Benefits&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;Free snacks&lt;/li&gt;&lt;li&gt;401k&lt;/li&gt;&lt;/ul&gt;&lt;h3&gt;Equal Opportunity&lt;/h3&gt;&lt;p&gt;Example Bio is an equal opportunity employer.&lt;/p&gt;"
+    },
+    {
+      "id": 1002,
+      "title": "Account Executive",
+      "absolute_url": "https://boards.greenhouse.io/examplebio/jobs/1002",
+      "updated_at": "2026-10-30T09:00:00Z",
+      "location": {"name": "London, UK"},
+      "content": "&lt;p&gt;Sell things.&lt;/p&gt;"
+    },
+    {"id": 1003, "title": "No URL job", "location": {"name": "Remote"}, "content": ""}
+  ],
+  "meta": {"total": 3}
+}

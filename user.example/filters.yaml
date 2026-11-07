@@ -1,0 +1,18 @@
+# FICTIONAL EXAMPLE. Overrides for the prefilter defaults (src/jobmatcher/config/filters.default.yaml).
+# Only keys you set here change; everything else keeps its default.
+
+max_age_days: 30
+
+location:
+  countries: [US]
+  remote: true
+  home_zip: "80302"        # the example person's zip; onsite/hybrid jobs must be within radius_miles
+  radius_miles: 25
+
+title:
+  include: [data, analyst, analytics, scientist, environmental, hydrolog, gis]
+  exclude: [sales, account executive, account manager, business development]
+
+max_years_required: 6      # drop postings that ask for more than 6 years of experience
+min_salary: null           # no floor; salary is only used for sorting
+max_clearance: public_trust

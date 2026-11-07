@@ -1,0 +1,24 @@
+# Defaults for the code-only prefilter, which runs before any paid classifier call.
+# Override any key in user/filters.yaml; keys you leave out keep these values.
+
+max_age_days: 30            # drop postings first published more than this many days ago
+
+location:
+  countries: [US]           # postings tied only to other countries are dropped
+  remote: true              # keep remote postings (in the countries above)
+  home_zip: null            # a 5-digit US zip; when set, onsite and hybrid postings must be nearby
+  radius_miles: 25          # how far from home_zip an onsite or hybrid posting may be
+  hybrid: true              # treat hybrid postings like onsite ones (false drops them)
+  keep_unknown: true        # keep postings whose location cannot be placed
+
+title:
+  include: []               # if non-empty, the title must contain at least one of these
+  exclude: []               # drop titles containing any of these (e.g. sales)
+
+# Seniority words matched in the title. Drops roles too junior or too senior for you.
+seniority_exclude: [intern, internship, director, vice president, vp, head of, chief]
+
+max_years_required: null    # drop postings that require more years of experience; null = off
+min_salary: null            # drop postings whose top of range is below this (annual); null = off
+max_clearance: null         # highest clearance you hold or will obtain:
+                            # none | public_trust | secret | top_secret; null = off

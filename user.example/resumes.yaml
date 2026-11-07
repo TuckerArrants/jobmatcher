@@ -1,0 +1,9 @@
+# FICTIONAL EXAMPLE. Which resume version to suggest for a posting.
+# The first entry whose keywords appear in the posting title or text wins; `default` otherwise.
+
+versions:
+  - name: environmental-data
+    keywords: [environmental, water, hydrolog, climate, geospatial, gis]
+  - name: analytics-engineering
+    keywords: [dbt, analytics engineer, data pipeline, warehouse]
+default: general-data-analyst

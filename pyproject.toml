@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "jobmatcher"
+version = "0.1.0"
+description = "Collect job postings from public job boards, filter them in code, and classify them as apply / consider / skip for one person."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+dependencies = [
+  "requests>=2.31",
+  "PyYAML>=6.0",
+  "zipcodes>=3.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[project.scripts]
+jobmatch = "jobmatcher.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+jobmatcher = ["config/*.yaml", "config/questions/*.yaml"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

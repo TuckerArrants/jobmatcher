@@ -1,0 +1,14 @@
+# FICTIONAL EXAMPLE. The employers whose public job boards are fetched on every run.
+# Find a company's board with:  jobmatch find-board "Company Name"
+# ats is one of: greenhouse, lever, ashby
+
+companies:
+  - name: GitLab
+    ats: greenhouse
+    token: gitlab
+  - name: Palantir
+    ats: lever
+    token: palantir
+  - name: Ramp
+    ats: ashby
+    token: ramp

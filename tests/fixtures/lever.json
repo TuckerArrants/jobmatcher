@@ -1,0 +1,26 @@
+[
+  {
+    "id": "aaaa-1111",
+    "text": "Quantitative Researcher",
+    "hostedUrl": "https://jobs.lever.co/examplefund/aaaa-1111",
+    "applyUrl": "https://jobs.lever.co/examplefund/aaaa-1111/apply",
+    "createdAt": 1793836000000,
+    "workplaceType": "onsite",
+    "categories": {"location": "New York, NY", "allLocations": ["New York, NY", "Chicago, IL"], "team": "Research", "commitment": "Full-time"},
+    "description": "<div>Research systematic futures strategies.</div>",
+    "lists": [{"text": "Requirements", "content": "<li>5+ years of experience in quantitative research</li><li>Python</li>"}],
+    "additional": "<div>We are an equal opportunity employer.</div>",
+    "salaryRange": {"currency": "USD", "interval": "per-year-salary", "min": 175000, "max": 250000}
+  },
+  {
+    "id": "bbbb-2222",
+    "text": "Data Analyst (Remote)",
+    "hostedUrl": "https://jobs.lever.co/examplefund/bbbb-2222",
+    "createdAt": 1793836000000,
+    "workplaceType": "remote",
+    "categories": {"location": "United States"},
+    "description": "<p>SQL and dashboards.</p>",
+    "lists": [],
+    "salaryRange": {"currency": "USD", "interval": "per-hour-wage", "min": 40, "max": 50}
+  }
+]

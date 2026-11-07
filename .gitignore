@@ -1,0 +1,24 @@
+# --- jobmatcher: personal data (BEGIN) ---
+# `jobmatch init` removes this block in your PRIVATE copy so that user/ can be
+# committed there. Never remove it in the public upstream repository.
+user/
+# --- jobmatcher: personal data (END) ---
+
+# Working databases and caches are never committed, in any copy.
+*.sqlite
+*.sqlite-journal
+*.db
+.env
+.env.*
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/

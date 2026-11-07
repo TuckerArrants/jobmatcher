@@ -1,0 +1,25 @@
+{
+  "apiVersion": "1",
+  "jobs": [
+    {
+      "id": "c-1",
+      "title": "Machine Learning Engineer, Chemistry",
+      "location": "San Francisco, CA",
+      "secondaryLocations": [{"location": "Remote (US)"}],
+      "isRemote": true,
+      "workplaceType": "Hybrid",
+      "isListed": true,
+      "publishedAt": "2026-10-20T00:00:00.000+00:00",
+      "jobUrl": "https://jobs.ashbyhq.com/examplechem/c-1",
+      "descriptionHtml": "<p>Train GNNs on molecules.</p><p>Active TS/SCI clearance required.</p>",
+      "compensation": {"summaryComponents": [{"compensationType": "Salary", "interval": "1 YEAR", "currencyCode": "USD", "minValue": 150000, "maxValue": 200000}]}
+    },
+    {
+      "id": "c-2",
+      "title": "Unlisted role",
+      "isListed": false,
+      "jobUrl": "https://jobs.ashbyhq.com/examplechem/c-2",
+      "descriptionHtml": ""
+    }
+  ]
+}
