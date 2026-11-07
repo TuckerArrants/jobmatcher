@@ -41,6 +41,7 @@ reports and labels.
 | step | how | cost |
 |---|---|---|
 | ingest | public Greenhouse, Lever and Ashby board APIs, one request per board per run | free |
+| ingest (optional) | keyword searches on Adzuna and USAJobs (`user/searches.yaml`), when their free keys are in `.env` | free |
 | prefilter | code only: age, title words, seniority, location and radius, clearance, years required, salary floor | free |
 | classify | one call per new posting to the classifier (baseline: TypeSafe Jev) | about $0.17 per 1,000 postings |
 | decide, report | code | free |
@@ -81,6 +82,21 @@ verdict. Choice questions are asked twice, once with the options reversed, becau
 the first option. The decision rules that turn answers into apply / consider / skip run in code,
 from `src/jobmatcher/config/decision.default.yaml`. When the two orderings disagree, the posting
 is labelled *consider*, never guessed.
+
+## Sources
+
+* **Company boards** (`user/companies.yaml`): full posting text, but only the employers you list
+  that use Greenhouse, Lever or Ashby.
+* **Adzuna** (optional): a real job search, so it also finds employers on Workday and other
+  systems, and local ones. It returns only a description snippet, and its predicted salaries are
+  ignored. Listings come from Adzuna under its terms, so the report credits *Jobs by Adzuna*, and
+  the raw data stays in your private copy. Get keys at developer.adzuna.com.
+* **USAJobs** (optional): federal jobs with full text. Jobs open only to current federal
+  employees and closed announcements are skipped. Get a key at developer.usajobs.gov; your email
+  is sent as the User-Agent header, as USAJobs requires.
+
+When the same job appears in several sources (same company and title), the copy with the fullest
+text is kept and the others are marked `duplicate`.
 
 ## Prefilter settings
 

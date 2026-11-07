@@ -1,0 +1,22 @@
+# Keyword searches on job-search APIs, as opposed to per-company boards (companies.yaml).
+# Override in user/searches.yaml. Each source runs only when its keys are set in the
+# environment (or .env); otherwise it is skipped.
+#
+# Postings found here go through the same prefilter (location radius, title words, ...), so the
+# searches can be broad.
+
+adzuna:                     # needs ADZUNA_APP_ID and ADZUNA_APP_KEY (free developer account)
+  country: us
+  queries: []               # e.g. [data scientist, machine learning engineer]
+  near_home: true           # search around location.home_zip from filters.yaml
+  remote: true              # also search "<query> remote" nationwide
+  max_days_old: 30
+  results_per_page: 50
+  pages: 1                  # pages per query; each page is one request
+
+usajobs:                    # needs USAJOBS_API_KEY and USAJOBS_EMAIL (free; the email is sent as
+                            # the User-Agent header, as USAJobs requires)
+  keywords: []              # e.g. [data scientist, statistician, bioinformatics]
+  days_posted: 30           # 0-60
+  results_per_page: 250     # up to 500; one request per keyword
+  public_only: true         # skip jobs open only to current federal employees

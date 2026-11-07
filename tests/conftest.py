@@ -20,9 +20,11 @@ class FakeHttp:
     def __init__(self, routes: dict[str, object]) -> None:
         self.routes = routes
         self.calls: list[str] = []
+        self.requests: list[tuple[str, dict, dict]] = []
 
     def get_json(self, url, params=None, headers=None):
         self.calls.append(url)
+        self.requests.append((url, dict(params or {}), dict(headers or {})))
         for prefix, data in self.routes.items():
             if url.startswith(prefix):
                 return data

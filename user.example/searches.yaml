@@ -1,0 +1,8 @@
+# FICTIONAL EXAMPLE. Keyword searches on job-search APIs. A source runs only when its keys are
+# in .env (or the environment). Results go through the same prefilter as everything else.
+
+adzuna:
+  queries: [data analyst, environmental data, hydrologist, gis analyst]
+
+usajobs:
+  keywords: [hydrologist, data scientist, environmental protection specialist]

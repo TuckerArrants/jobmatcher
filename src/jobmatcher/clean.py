@@ -150,7 +150,7 @@ def parse_years_required(text: str) -> int | None:
 _CLEARANCE_LEVELS = {"public_trust": 1, "secret": 2, "top_secret": 3}
 _CLEARANCE_PATTERNS = [
     ("top_secret", re.compile(r"\b(top\s+secret|TS\s*/\s*SCI|TS\s+clearance|SCI\s+eligib)", re.IGNORECASE)),
-    ("secret", re.compile(r"\bsecret\s+(security\s+)?clearance\b|\bclearance\s+level:\s*secret\b", re.IGNORECASE)),
+    ("secret", re.compile(r"\bsecret\s+(security\s+)?clearance\b|\bclearance(\s+level)?:\s*secret\b", re.IGNORECASE)),
     ("public_trust", re.compile(r"\bpublic\s+trust\b", re.IGNORECASE)),
 ]
 

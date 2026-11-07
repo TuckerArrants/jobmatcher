@@ -1,0 +1,59 @@
+{
+  "SearchResult": {
+    "SearchResultCount": 3,
+    "SearchResultCountAll": 3,
+    "SearchResultItems": [
+      {
+        "MatchedObjectId": "800001",
+        "MatchedObjectDescriptor": {
+          "PositionID": "NIH-1",
+          "PositionTitle": "Data Scientist (Biomedical)",
+          "PositionURI": "https://www.usajobs.gov:443/job/800001",
+          "ApplyURI": ["https://www.usajobs.gov:443/job/800001?PostingChannelID=RESTAPI"],
+          "PositionLocation": [{"LocationName": "Anywhere in the U.S. (remote job)", "CountryCode": "United States"}],
+          "OrganizationName": "National Institutes of Health",
+          "DepartmentName": "Department of Health and Human Services",
+          "PositionRemuneration": [{"MinimumRange": "99200", "MaximumRange": "153354", "RateIntervalCode": "PA"}],
+          "PublicationStartDate": "2026-11-02T00:00:00.0000",
+          "ApplicationCloseDate": "2026-12-01T23:59:59.9970",
+          "QualificationSummary": "Experience applying machine learning to imaging data.",
+          "UserArea": {"Details": {
+            "JobSummary": "Join an imaging informatics team.",
+            "MajorDuties": ["Develop models for MRI analysis.", "Validate pipelines."],
+            "Education": "Bachelor's degree in a quantitative field.",
+            "Requirements": "U.S. citizenship. Ability to obtain Public Trust.",
+            "HiringPath": ["public"],
+            "RemoteIndicator": true,
+            "SecurityClearance": "Not Required"
+          }}
+        }
+      },
+      {
+        "MatchedObjectId": "800002",
+        "MatchedObjectDescriptor": {
+          "PositionTitle": "Statistician",
+          "PositionURI": "https://www.usajobs.gov:443/job/800002",
+          "PositionLocation": [{"LocationName": "Atlanta, Georgia", "Latitude": 33.75, "Longitude": -84.39}],
+          "OrganizationName": "Centers for Disease Control and Prevention",
+          "PositionRemuneration": [{"MinimumRange": "40.00", "MaximumRange": "50.00", "RateIntervalCode": "PH"}],
+          "PublicationStartDate": "2026-11-01T00:00:00.0000",
+          "ApplicationCloseDate": "2026-11-05T23:59:59.9970",
+          "UserArea": {"Details": {"HiringPath": ["public"]}}
+        }
+      },
+      {
+        "MatchedObjectId": "800003",
+        "MatchedObjectDescriptor": {
+          "PositionTitle": "Operations Research Analyst",
+          "PositionURI": "https://www.usajobs.gov:443/job/800003",
+          "PositionLocation": [{"LocationName": "Chattanooga, Tennessee"}],
+          "OrganizationName": "Tennessee Valley Authority",
+          "PositionRemuneration": [{"MinimumRange": "90000", "MaximumRange": "120000", "RateIntervalCode": "Per Year"}],
+          "PublicationStartDate": "2026-11-03T00:00:00.0000",
+          "ApplicationCloseDate": "2026-12-03T23:59:59.9970",
+          "UserArea": {"Details": {"HiringPath": ["fed-competitive"], "SecurityClearance": "Secret"}}
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "count": 3,
+  "results": [
+    {
+      "id": "4400001",
+      "title": "Data Analyst",
+      "description": "Analyze hospital operations data using SQL and Python. Salary $70,000 - $85,000 a year...",
+      "redirect_url": "https://www.adzuna.com/land/ad/4400001?se=abc&utm_medium=api&v=1",
+      "created": "2026-11-03T10:00:00Z",
+      "location": {"display_name": "Chattanooga, Hamilton County", "area": ["US", "Tennessee", "Hamilton County", "Chattanooga"]},
+      "latitude": 35.04, "longitude": -85.30,
+      "company": {"display_name": "Example Health System"},
+      "salary_min": 70000, "salary_max": 85000, "salary_is_predicted": "0",
+      "category": {"label": "IT Jobs", "tag": "it-jobs"}
+    },
+    {
+      "id": "4400002",
+      "title": "Machine Learning Engineer - Remote",
+      "description": "Fully remote role building PyTorch models...",
+      "redirect_url": "https://www.adzuna.com/land/ad/4400002?se=xyz&v=2",
+      "created": "2026-11-02T10:00:00Z",
+      "location": {"display_name": "US", "area": ["US"]},
+      "company": {"display_name": "Example Bio, Inc."},
+      "salary_min": 140000, "salary_max": 140000, "salary_is_predicted": "1"
+    },
+    {
+      "id": "4400003",
+      "title": "Data Scientist, Clinical Imaging",
+      "description": "Build models on MRI data...",
+      "redirect_url": "https://www.adzuna.com/land/ad/4400003?se=q",
+      "created": "2026-11-01T10:00:00Z",
+      "location": {"display_name": "Boston, MA"},
+      "company": {"display_name": "Example Bio Inc"}
+    }
+  ]
+}

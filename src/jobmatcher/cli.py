@@ -67,6 +67,12 @@ def _cmd_ingest(args: argparse.Namespace) -> int:
         f"boards: {c.get('boards_ok', 0)} ok, {c.get('boards_failed', 0)} failed | "
         f"postings: {c.get('fetched', 0)} fetched, {c.get('new', 0)} new, {c.get('kept', 0)} kept"
     )
+    searches = [f"{s} {c[f'{s}_found']} found" for s in ("adzuna", "usajobs") if f"{s}_found" in c]
+    searches += [f"{s} skipped (no key in .env)" for s in ("adzuna", "usajobs") if f"{s}_skipped_no_key" in c]
+    if searches:
+        out.info("searches: " + ", ".join(searches))
+    if c.get("duplicates"):
+        out.info(f"duplicates across sources dropped: {c['duplicates']}")
     if result["dropped_by_rule"]:
         drops = ", ".join(f"{k} {v}" for k, v in sorted(result["dropped_by_rule"].items()))
         out.info(f"dropped by rule: {drops}")
