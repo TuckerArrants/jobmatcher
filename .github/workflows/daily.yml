@@ -1,0 +1,98 @@
+name: daily
+
+# Runs the pipeline in YOUR PRIVATE COPY and commits the results (reports, labels, cache) to it.
+# In the public template it finds no user/ folder and exits without doing anything.
+
+on:
+  schedule:
+    - cron: "17 11 * * *"   # 11:17 UTC daily; edit to taste
+  workflow_dispatch:
+    inputs:
+      command:
+        description: What to run
+        type: choice
+        options: [run, ingest, find-boards]
+        default: run
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: jobmatcher-daily
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check this is a configured private copy
+        id: ready
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ ! -e .jobmatcher-private ] || [ ! -f user/profile.md ]; then
+            echo "::notice::No private-copy setup found (user/profile.md). Run 'jobmatch init' in your private copy. Nothing to do."
+            echo "ready=false" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          if [ "$(gh api "repos/$GITHUB_REPOSITORY" --jq .private)" != "true" ]; then
+            echo "::error::This repository is public. Refusing to run, because user/ holds personal data. Make the repository private."
+            exit 1
+          fi
+          echo "ready=true" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-python@v5
+        if: steps.ready.outputs.ready == 'true'
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install
+        if: steps.ready.outputs.ready == 'true'
+        run: pip install -e .
+
+      - name: Restore working database
+        if: steps.ready.outputs.ready == 'true'
+        uses: actions/cache/restore@v4
+        with:
+          path: user/data/jobs.sqlite
+          key: jobs-db-${{ github.run_id }}
+          restore-keys: jobs-db-
+
+      - name: Run
+        if: steps.ready.outputs.ready == 'true'
+        env:
+          TYPESAFE_API_KEY: ${{ secrets.TYPESAFE_API_KEY }}
+          USAJOBS_API_KEY: ${{ secrets.USAJOBS_API_KEY }}
+          USAJOBS_EMAIL: ${{ secrets.USAJOBS_EMAIL }}
+          ADZUNA_APP_ID: ${{ secrets.ADZUNA_APP_ID }}
+          ADZUNA_APP_KEY: ${{ secrets.ADZUNA_APP_KEY }}
+          COMMAND: ${{ inputs.command || 'run' }}
+        run: |
+          case "$COMMAND" in
+            run)         jobmatch run ;;
+            ingest)      jobmatch ingest ;;
+            find-boards) jobmatch find-board --file user/companies-to-find.txt --write ;;
+            *)           echo "::error::unknown command"; exit 1 ;;
+          esac
+
+      - name: Save working database
+        if: always() && steps.ready.outputs.ready == 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: user/data/jobs.sqlite
+          key: jobs-db-${{ github.run_id }}
+
+      - name: Commit results to this private repository
+        if: steps.ready.outputs.ready == 'true'
+        run: |
+          git config user.name "jobmatcher-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add user/
+          python src/jobmatcher/privacy.py .
+          if git diff --cached --quiet; then echo "no changes"; exit 0; fi
+          git commit -q -m "jobmatcher: results $(date -u +%F)"
+          git push -q
