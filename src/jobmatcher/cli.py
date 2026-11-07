@@ -75,9 +75,55 @@ def _cmd_ingest(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_classify(args: argparse.Namespace) -> int:
+    from jobmatcher.classify import CostLimit, classify
+    from jobmatcher.classifiers.jev import JevError
+    from jobmatcher.store import Store
+
+    paths = Paths.from_env(args.user_dir)
+    store = Store(paths.db)
+    try:
+        res = classify(paths, store, limit=args.limit, dry_run=args.dry_run, max_cost=args.max_cost)
+    except CostLimit as exc:
+        out.error(str(exc))
+        return 3
+    except JevError as exc:
+        out.error(str(exc))
+        return 4
+    finally:
+        store.close()
+    if res.dry_run:
+        out.info(
+            f"dry run: {res.candidates} postings to classify ({res.reused} already answered in the cache); "
+            f"estimated cost ${res.est_cost_usd:.4f}. Nothing was sent."
+        )
+        if res.candidates - res.reused:
+            out.detail("the first request body is in user/cache/dry-run-example.json")
+        return 0
+    labels = ", ".join(f"{k} {res.labels.get(k, 0)}" for k in ("apply", "consider", "skip"))
+    out.info(
+        f"classified: {res.asked} asked, {res.reused} from cache, {res.failed} failed | {labels} | "
+        f"cost ${res.cost_usd:.4f}"
+    )
+    if res.stopped:
+        out.error(f"stopped early: {res.stopped}")
+        return 4
+    return 1 if res.failed else 0
+
+
 def _cmd_run(args: argparse.Namespace) -> int:
-    """The scheduled pipeline. Grows as milestones land: ingest -> classify -> decide -> report."""
-    return _cmd_ingest(args)
+    """The scheduled pipeline: ingest -> classify -> (report, next milestone)."""
+    code = _cmd_ingest(args)
+    if code:
+        return code
+    return _cmd_classify(args)
+
+
+def _add_classify_args(s: argparse.ArgumentParser) -> None:
+    s.add_argument("--limit", type=int, help="classify at most this many postings (newest first)")
+    s.add_argument("--dry-run", action="store_true", help="show what would be sent and its cost; send nothing")
+    s.add_argument("--max-cost", type=float, default=1.0,
+                   help="refuse to start if the estimated cost is above this many dollars (default 1.00)")
 
 
 def _cmd_privacy(args: argparse.Namespace) -> int:
@@ -110,7 +156,12 @@ def build_parser() -> argparse.ArgumentParser:
     s = sub.add_parser("ingest", help="fetch boards, store new postings, apply the prefilter")
     s.set_defaults(func=_cmd_ingest)
 
-    s = sub.add_parser("run", help="the full scheduled pipeline")
+    s = sub.add_parser("classify", help="classify kept postings that have no current result")
+    _add_classify_args(s)
+    s.set_defaults(func=_cmd_classify)
+
+    s = sub.add_parser("run", help="the full pipeline: ingest, then classify")
+    _add_classify_args(s)
     s.set_defaults(func=_cmd_run)
 
     s = sub.add_parser("privacy-check", help="fail if personal data, databases or keys are tracked")

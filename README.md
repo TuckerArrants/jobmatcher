@@ -4,8 +4,8 @@ A vibe coded weekend project. Collects job postings from free public job boards,
 the rest as **apply / consider / skip** for one person, and delivers a ranked digest. How well the
 classifier agrees with your own judgement is measured on a held-out set of your labels.
 
-> Status: under construction. Ingest and the prefilter work; the classifier, report and setup
-> wizard are next. The quickstart below describes the finished tool.
+> Status: under construction. Ingest, the prefilter and the classifier work; the daily report,
+> setup wizard and evaluation are next. The quickstart below describes the finished tool.
 
 ## Quickstart
 
@@ -56,6 +56,31 @@ No scraping of LinkedIn, Indeed, Glassdoor or any other site whose terms forbid 
 * Workflow logs print counts and costs only, never titles, companies, scores or labels.
 * `jobmatch privacy-check` (also a pre-commit hook and a CI step) fails if personal files,
   databases or keys are tracked. Enable the hook with `git config core.hooksPath .githooks`.
+
+## Commands
+
+| command | what it does |
+|---|---|
+| `jobmatch run` | ingest, then classify the new postings that passed the prefilter |
+| `jobmatch ingest` | fetch every board once, store new postings, apply the prefilter |
+| `jobmatch classify --dry-run` | show how many postings would be sent and the estimated cost; send nothing. The first request body is written to `user/cache/dry-run-example.json` |
+| `jobmatch classify --limit 100` | classify at most 100 postings, newest first |
+| `jobmatch find-board "Name"` | find a company's public board; `--file names.txt --write` adds many to `companies.yaml` |
+| `jobmatch privacy-check` | fail if personal data, databases or keys are tracked |
+
+`classify` and `run` refuse to start when the estimated cost is above `--max-cost` (default
+$1.00). Every answer is cached, so a posting is never paid for twice. Editing your profile makes
+earlier answers stale, so those postings are asked again.
+
+## The classifier
+
+The baseline is TypeSafe's Jev (`jev-1.13.0`, pinned), a zero-shot model that returns
+probabilities, not text. The questions are in `src/jobmatcher/config/questions/jobs_v1.yaml`.
+They cover role match, domain interest, hard blockers, unwanted work, level fit and an overall
+verdict. Choice questions are asked twice, once with the options reversed, because Jev favours
+the first option. The decision rules that turn answers into apply / consider / skip run in code,
+from `src/jobmatcher/config/decision.default.yaml`. When the two orderings disagree, the posting
+is labelled *consider*, never guessed.
 
 ## Prefilter settings
 

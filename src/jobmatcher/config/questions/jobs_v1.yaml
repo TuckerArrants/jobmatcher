@@ -1,0 +1,66 @@
+# Jev question set jobs_v1. NEVER edit after a full run: a change becomes jobs_v2.
+# The set's hash (model + state keys + every question) is part of the classifier name recorded
+# with each result, so every answer is traceable to the exact questions asked.
+#
+# State sent with every request: {"posting": <title, company, location, cleaned text>,
+#                                 "profile": <user/profile.md>}
+# Questions refer to "the posting" and "the profile", never to a person by name.
+#
+# Jev 1.13 notes followed: one condition per question; noul is a literal statement (high = yes);
+# score levels are observable descriptions, lowest first, with no numbers; every choice option
+# has a description; choices are also asked with options reversed (order bias) and averaged.
+# Left to code, never asked: years of experience, salary, dates, distances (Jev counts badly).
+
+name: jobs_v1
+model: jev-1.13.0
+state_keys: [posting, profile]
+reverse_choices: true
+
+questions:
+  role_match:
+    type: score
+    instructions: How closely does the day-to-day work described in the posting match one of the
+      target roles listed in the profile?
+    criteria:
+      - The work is unrelated to every target role in the profile.
+      - Some tasks overlap with a target role, but the core of the job is a different kind of work.
+      - The core of the job matches a target role, with a different focus or emphasis.
+      - The job is one of the target roles in the profile.
+
+  interest:
+    type: score
+    instructions: How well does the problem domain of the posting (what the employer works on)
+      match the interests listed in the profile?
+    criteria:
+      - The domain is one the profile lists as unwanted.
+      - The domain is neither listed as an interest nor as unwanted in the profile.
+      - The domain is related to an interest listed in the profile.
+      - The domain is one of the interests listed in the profile.
+
+  hard_blocker:
+    type: noul
+    instructions: The posting requires a credential that the profile does not show, such as a PhD,
+      a medical or other professional license, or an active security clearance.
+
+  unwanted:
+    type: noul
+    instructions: The job in the posting is one of the kinds of work the profile lists as unwanted.
+
+  level_fit:
+    type: choice
+    instructions: How does the seniority the posting asks for compare with the experience shown in
+      the profile?
+    criteria:
+      below: The role is clearly junior to the experience shown in the profile.
+      fits: The seniority of the role matches the experience shown in the profile.
+      stretch: The role asks for somewhat more experience than the profile shows, but is reachable.
+      above: The role asks for far more seniority or experience than the profile shows.
+
+  verdict:
+    type: choice
+    instructions: Given the target roles, interests and constraints in the profile, should the
+      person described by the profile apply to the job in the posting?
+    criteria:
+      apply: A strong match that the person should apply to.
+      consider: A partial match that is worth a closer look.
+      skip: Not a good match for the person.

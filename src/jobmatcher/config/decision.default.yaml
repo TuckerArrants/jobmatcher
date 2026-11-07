@@ -1,0 +1,23 @@
+# Decision rules applied in code to the classifier's answers. Override in user/decision.yaml.
+# Tune these on the tune split of your labels only, never on held-out labels.
+# Rules are checked in this order; the first that matches decides:
+#   1. hard_blocker >= hard_blocker_skip           -> skip
+#   2. unwanted >= unwanted_skip                    -> skip
+#   3. level_fit is "above" (both orderings agree)  -> skip
+#   4. verdict is "apply" (both orderings agree), its confidence >= t_apply,
+#      and role_match >= role_match_apply           -> apply
+#   5. verdict is "skip" (both orderings agree) and its confidence >= t_skip -> skip
+#   6. everything else, including any disagreement between orderings -> consider
+
+question_set: jobs_v1
+hard_blocker_skip: 0.7
+unwanted_skip: 0.7
+t_apply: 0.5
+role_match_apply: 0.6       # role_match is 0..1 (0 = unrelated, 1 = exactly a target role)
+t_skip: 0.5
+
+# Ranking within each label: a weighted sum of these sub-scores (all 0..1).
+sort_weights:
+  role_match: 0.4
+  interest: 0.3
+  verdict__p_apply: 0.3

@@ -54,8 +54,13 @@ def find_board(company: str, http: Http, tokens: list[str] | None = None) -> lis
 
 
 def best(hits: list[BoardHit]) -> BoardHit | None:
-    """The hit with the most open jobs; ties go to the earlier (more specific) token."""
-    return max(hits, key=lambda h: h.jobs, default=None)
+    """The most specific match: hits for the earliest candidate token (the full company name
+    comes first), then the one with most open jobs. A shorter token such as the first word can
+    belong to a different company, so it is used only when the full name finds nothing."""
+    if not hits:
+        return None
+    first_token = hits[0].token
+    return max((h for h in hits if h.token == first_token), key=lambda h: h.jobs)
 
 
 def add_to_companies(path: Path, entries: list[dict]) -> int:

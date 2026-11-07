@@ -37,8 +37,11 @@ def test_add_to_companies_skips_existing(tmp_path):
     assert [c["name"] for c in yaml.safe_load(path.read_text())["companies"]] == ["A", "B"]
 
 
-def test_best_prefers_most_jobs():
-    assert best([BoardHit("lever", "x", 2), BoardHit("greenhouse", "y", 9)]).token == "y"
+def test_best_prefers_full_name_over_bigger_board():
+    # "Arcadia Science": the full-name board wins over a bigger board for the first word only.
+    hits = [BoardHit("lever", "arcadiascience", 7), BoardHit("lever", "arcadia", 40)]
+    assert best(hits).token == "arcadiascience"
+    assert best([BoardHit("lever", "x", 2), BoardHit("greenhouse", "x", 9)]).ats == "greenhouse"
     assert best([]) is None
 
 
