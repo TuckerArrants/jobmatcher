@@ -33,9 +33,14 @@ jobs:
         id: ready
         env:
           GH_TOKEN: ${{ github.token }}
+          HAS_KEY: ${{ secrets.TYPESAFE_API_KEY != '' }}
         run: |
           if [ ! -e .jobmatcher-private ] || [ ! -f user/profile.md ]; then
             echo "::notice::No private-copy setup found (user/profile.md). Run 'jobmatch init' in your private copy. Nothing to do."
+            echo "ready=false" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          if [ "$GITHUB_EVENT_NAME" = "schedule" ] && [ "$HAS_KEY" != "true" ]; then
+            echo "::notice::No TYPESAFE_API_KEY secret, so scheduled runs are off (you run jobmatch locally). Nothing to do."
             echo "ready=false" >> "$GITHUB_OUTPUT"; exit 0
           fi
           if [ "$(gh api "repos/$GITHUB_REPOSITORY" --jq .private)" != "true" ]; then

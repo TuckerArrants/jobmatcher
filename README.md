@@ -17,6 +17,25 @@ classifier agrees with your own judgement is measured on a held-out set of your 
 3. Add the repository secret `TYPESAFE_API_KEY`.
 4. Enable the scheduled workflow. The first digest arrives on the next run.
 
+### Or run it on your own computer only
+
+If you would rather your key never touch GitHub, skip steps 3 and 4. The scheduled workflow does
+nothing without the secret. Instead:
+
+```powershell
+git clone https://github.com/YOU/YOUR-PRIVATE-COPY.git
+cd YOUR-PRIVATE-COPY
+python -m venv .venv
+.venv\Scripts\activate          # macOS / Linux: source .venv/bin/activate
+pip install -e .
+copy env.example .env           # macOS / Linux: cp env.example .env ; then put your key in .env
+jobmatch run
+```
+
+`.env` is git-ignored and blocked by the privacy check. Your working database stays in
+`user/data/` on your machine. Commit and push `user/` whenever you want a backup of your
+reports and labels.
+
 ## What runs where
 
 | step | how | cost |
