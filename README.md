@@ -1,6 +1,6 @@
 # jobmatcher
 
-Collects job postings from free public job boards, drops clear mismatches in code, classifies
+A vibe coded weekend project. Collects job postings from free public job boards, drops clear mismatches in code, classifies
 the rest as **apply / consider / skip** for one person, and delivers a ranked digest. How well the
 classifier agrees with your own judgement is measured on a held-out set of your labels.
 
