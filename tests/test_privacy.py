@@ -87,10 +87,17 @@ def test_private_copy_may_track_user_but_not_databases_or_env(repo):
     assert len(privacy.check(repo)) == 2
 
 
+upstream_only = pytest.mark.skipif(
+    (REPO / privacy.PRIVATE_MARKER).exists(), reason="private copy: user/ is meant to be tracked here"
+)
+
+
+@upstream_only
 def test_upstream_has_no_private_marker():
     assert not (REPO / privacy.PRIVATE_MARKER).exists()
 
 
+@upstream_only
 def test_gitignore_ignores_user_and_databases():
     text = (REPO / ".gitignore").read_text()
     lines = {l.strip() for l in text.splitlines()}

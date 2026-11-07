@@ -23,9 +23,9 @@ jobs:
         run: pytest -q
       - name: Privacy check on tracked files
         run: python src/jobmatcher/privacy.py .
-      - name: The template itself must never be in private-copy mode
-        if: github.event.repository.is_template
+      - name: A public repository must never be in private-copy mode
+        if: github.event.repository.private == false
         run: |
-          if [ -e .jobmatcher-private ]; then
-            echo "::error::.jobmatcher-private must not exist in the public template"; exit 1
+          if [ -e .jobmatcher-private ] || git ls-files --error-unmatch user/ >/dev/null 2>&1; then
+            echo "::error::This repository is public but is set up as a private copy (user/ data). Make it private."; exit 1
           fi
