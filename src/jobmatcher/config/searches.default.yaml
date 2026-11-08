@@ -20,3 +20,18 @@ usajobs:                    # needs USAJOBS_API_KEY and USAJOBS_EMAIL (free; the
   days_posted: 30           # 0-60
   results_per_page: 250     # up to 500; one request per keyword
   public_only: true         # skip jobs open only to current federal employees
+
+himalayas:                  # remote jobs from many companies; free, no key needed
+                            # (HIMALAYAS_API_KEY in .env is optional and only raises rate limits)
+  queries: []               # e.g. [data scientist, machine learning]
+  country: US               # jobs open to this country (or worldwide); null = any
+  pages: 1
+
+hn:                         # Hacker News "Who is hiring?" monthly thread; free, no key
+  enabled: false
+  months: 1                 # how many recent monthly threads to read
+
+discovery:                  # add employers automatically (see src/jobmatcher/discover.py)
+  enabled: true
+  min_role_match: 0.5       # only companies with a posting at least this relevant (0..1)
+  max_per_run: 15           # board lookups per run (each is up to 6 small requests)

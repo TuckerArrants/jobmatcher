@@ -67,8 +67,9 @@ def _cmd_ingest(args: argparse.Namespace) -> int:
         f"boards: {c.get('boards_ok', 0)} ok, {c.get('boards_failed', 0)} failed | "
         f"postings: {c.get('fetched', 0)} fetched, {c.get('new', 0)} new, {c.get('kept', 0)} kept"
     )
-    searches = [f"{s} {c[f'{s}_found']} found" for s in ("adzuna", "usajobs") if f"{s}_found" in c]
-    searches += [f"{s} skipped (no key in .env)" for s in ("adzuna", "usajobs") if f"{s}_skipped_no_key" in c]
+    names = ("adzuna", "usajobs", "himalayas", "hn")
+    searches = [f"{s} {c[f'{s}_found']} found" for s in names if f"{s}_found" in c]
+    searches += [f"{s} skipped (no key in .env)" for s in names if f"{s}_skipped_no_key" in c]
     if searches:
         out.info("searches: " + ", ".join(searches))
     if c.get("duplicates"):
@@ -141,7 +142,28 @@ def _cmd_run(args: argparse.Namespace) -> int:
     code = _cmd_classify(args)
     if code not in (0, 1):  # 1 = some postings failed; still report the rest
         return code
-    return _cmd_report(args) or code
+    code = _cmd_report(args) or code
+    return _cmd_discover(args) or code
+
+
+def _cmd_discover(args: argparse.Namespace) -> int:
+    from jobmatcher.classify import build_classifier
+    from jobmatcher.discover import discover
+    from jobmatcher.ingest import load_searches
+    from jobmatcher.store import Store
+
+    paths = Paths.from_env(args.user_dir)
+    cfg = load_searches(paths)["discovery"]
+    if not cfg.get("enabled", True):
+        return 0
+    store = Store(paths.db)
+    try:
+        res = discover(paths, store, build_classifier(paths, offline=True).name, cfg)
+    finally:
+        store.close()
+    if res["checked"]:
+        out.info(f"discovery: {res['checked']} new employers checked, {res['added']} boards added to companies.yaml")
+    return 0
 
 
 def _add_classify_args(s: argparse.ArgumentParser) -> None:
@@ -189,7 +211,10 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--all", action="store_true", help="every open posting, not only new ones")
     s.set_defaults(func=_cmd_report)
 
-    s = sub.add_parser("run", help="the full pipeline: ingest, classify, report")
+    s = sub.add_parser("discover", help="add boards of relevant employers found by searches")
+    s.set_defaults(func=_cmd_discover)
+
+    s = sub.add_parser("run", help="the full pipeline: ingest, classify, report, discover")
     _add_classify_args(s)
     s.add_argument("--all", action="store_true", help="report every open posting, not only new ones")
     s.set_defaults(func=_cmd_run)

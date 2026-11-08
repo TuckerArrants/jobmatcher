@@ -1,0 +1,52 @@
+{
+ "jobs": [
+  {
+   "title": "Data Scientist, Genomics",
+   "companyName": "Helix Example",
+   "companySlug": "helix-example",
+   "guid": "him-1",
+   "applicationLink": "https://himalayas.app/companies/helix-example/jobs/data-scientist?utm=api",
+   "pubDate": 1793836000,
+   "expiryDate": 1796428000,
+   "locationRestrictions": [
+    "United States"
+   ],
+   "minSalary": 120000,
+   "maxSalary": 150000,
+   "currency": "USD",
+   "salaryPeriod": "annual",
+   "seniority": [
+    "Mid-level"
+   ],
+   "excerpt": "Analyze sequencing data.",
+   "description": "<p>Analyze sequencing data with Python.</p>"
+  },
+  {
+   "title": "ML Engineer",
+   "companyName": "Euro Example",
+   "guid": "him-2",
+   "applicationLink": "https://himalayas.app/companies/euro/jobs/ml",
+   "pubDate": 1793836000,
+   "locationRestrictions": [
+    "Germany"
+   ],
+   "minSalary": 70000,
+   "maxSalary": 90000,
+   "currency": "EUR",
+   "description": "<p>Models.</p>"
+  },
+  {
+   "title": "Analyst",
+   "companyName": "Anywhere Co",
+   "guid": "him-3",
+   "applicationLink": "https://himalayas.app/companies/anywhere/jobs/analyst",
+   "pubDate": 1793836000,
+   "locationRestrictions": [],
+   "minSalary": 40,
+   "maxSalary": 50,
+   "currency": "USD",
+   "salaryPeriod": "hourly",
+   "description": "<p>SQL.</p>"
+  }
+ ]
+}

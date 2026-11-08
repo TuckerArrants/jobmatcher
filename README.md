@@ -73,7 +73,7 @@ No scraping of LinkedIn, Indeed, Glassdoor or any other site whose terms forbid 
 
 | command | what it does |
 |---|---|
-| `jobmatch run` | ingest, classify the new postings that passed the prefilter, write the report |
+| `jobmatch run` | ingest, classify the new postings that passed the prefilter, write the report, discover new employers |
 | `jobmatch report` | write the digest to `user/reports/` (`YYYY-MM-DD.md`, `.html`, and `latest.html`); `--all` lists every open posting, not only new ones |
 | `jobmatch ingest` | fetch every board once, store new postings, apply the prefilter |
 | `jobmatch classify --dry-run` | show how many postings would be sent and the estimated cost; send nothing. The first request body is written to `user/cache/dry-run-example.json` |
@@ -114,12 +114,23 @@ is labelled *consider*, never guessed.
   systems, and local ones. It returns only a description snippet, and its predicted salaries are
   ignored. Listings come from Adzuna under its terms, so the report credits *Jobs by Adzuna*, and
   the raw data stays in your private copy. Get keys at developer.adzuna.com.
+* **Himalayas** (`himalayas.queries`): remote jobs from many companies, free with no key.
+  Reports credit Himalayas and link to its application pages, as its terms require.
+* **Hacker News "Who is hiring"** (`hn.enabled: true`): the monthly thread, where many startups
+  post. Free with no key.
 * **USAJobs** (optional): federal jobs with full text. Jobs open only to current federal
   employees and closed announcements are skipped. Get a key at developer.usajobs.gov; your email
   is sent as the User-Agent header, as USAJobs requires.
 
 When the same job appears in several sources (same company and title), the copy with the fullest
 text is kept and the others are marked `duplicate`.
+
+**Automatic discovery.** After each run, companies that reached you through a search source
+(Himalayas, Hacker News, Adzuna), and that have a posting the classifier rated relevant, are
+checked for a public Greenhouse, Lever or Ashby board. A board is added to `companies.yaml` only
+when its name matches the full company name, so the next run fetches that employer's whole
+job list. Every name checked is recorded in `user/discovered.yaml`, so nothing is checked twice.
+Your hand-picked employer list is a starting point, and it grows on its own.
 
 ## Prefilter settings
 

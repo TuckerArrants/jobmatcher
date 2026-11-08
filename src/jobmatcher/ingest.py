@@ -10,12 +10,12 @@ from datetime import datetime
 from jobmatcher.config import Company, Paths, load_companies, load_filters, load_layered
 from jobmatcher.models import Posting
 from jobmatcher.prefilter import KEPT, Prefilter
-from jobmatcher.sources import ATS, adzuna, usajobs
+from jobmatcher.sources import ATS, adzuna, himalayas, hn, usajobs
 from jobmatcher.sources.http import Http, NotFound, SourceError
 from jobmatcher.store import Store, now_iso
 
 # When the same job appears in several sources, keep the copy with the fullest text.
-SOURCE_PRIORITY = {"greenhouse": 0, "lever": 0, "ashby": 0, "usajobs": 1, "adzuna": 2}
+SOURCE_PRIORITY = {"greenhouse": 0, "lever": 0, "ashby": 0, "usajobs": 1, "himalayas": 2, "hn": 3, "adzuna": 4}
 DUPLICATE = "duplicate"
 _SUFFIXES = re.compile(r"\b(inc|llc|ltd|corp|corporation|co|company|the|pbc|plc|gmbh)\b\.?")
 
@@ -82,15 +82,19 @@ def ingest(
         take(postings)
 
     loc = filters.get("location") or {}
-    for name, module, run in (
-        ("adzuna", adzuna, lambda: adzuna.search(searches["adzuna"], loc.get("home_zip"),
-                                                 float(loc.get("radius_miles", 25)), http)),
-        ("usajobs", usajobs, lambda: usajobs.search(searches["usajobs"], http, now=now)),
+    always = lambda: True  # noqa: E731  sources that need no key
+    for name, keys_ok, run in (
+        ("adzuna", adzuna.keys_present, lambda: adzuna.search(searches["adzuna"], loc.get("home_zip"),
+                                                               float(loc.get("radius_miles", 25)), http)),
+        ("usajobs", usajobs.keys_present, lambda: usajobs.search(searches["usajobs"], http, now=now)),
+        ("himalayas", always, lambda: himalayas.search(searches["himalayas"], http)),
+        ("hn", always, lambda: hn.search(searches["hn"], http)),
     ):
-        configured = searches[name].get("queries") or searches[name].get("keywords")
+        cfg = searches[name]
+        configured = cfg.get("queries") or cfg.get("keywords") or cfg.get("enabled")
         if not configured:
             continue
-        if not module.keys_present():
+        if not keys_ok():
             counts[f"{name}_skipped_no_key"] += 1
             continue
         try:

@@ -1,0 +1,36 @@
+{
+ "id": 45000001,
+ "title": "Ask HN: Who is hiring? (November 2026)",
+ "children": [
+  {
+   "id": 45000101,
+   "author": "founder1",
+   "created_at_i": 1793600000,
+   "text": "Acme Bio | Machine Learning Engineer, Data Scientist | Boston, MA | ONSITE or REMOTE (US) | $150k-$200k<p>We build protein models. Python, PyTorch.</p><p>Apply: https://acmebio.example/jobs</p>",
+   "children": [
+    {
+     "id": 45000102,
+     "author": "someone",
+     "text": "Is this still open?"
+    }
+   ]
+  },
+  {
+   "id": 45000103,
+   "author": "hr2",
+   "created_at_i": 1793600100,
+   "text": "Quantly (YC W24) | Quant Researcher | New York, NY | ONSITE | Full-time<p>Systematic strategies.</p>"
+  },
+  {
+   "id": 45000104,
+   "author": null,
+   "text": null
+  },
+  {
+   "id": 45000105,
+   "author": "x",
+   "created_at_i": 1793600200,
+   "text": "We are hiring lots of people across many teams and this first line is a long sentence rather than a header so it cannot be parsed<p>body</p>"
+  }
+ ]
+}

@@ -159,6 +159,16 @@ def _md(text: str) -> str:
     return (text or "").replace("|", "\\|").replace("\n", " ").strip()
 
 
+def credits(d: Digest) -> list[tuple[str, str]]:
+    """Source credits required by the sources' terms, for sources that appear in this report."""
+    from jobmatcher.sources import himalayas, hn
+
+    table = {"adzuna": ("Jobs by Adzuna", "https://www.adzuna.com"),
+             "himalayas": himalayas.ATTRIBUTION, "hn": hn.ATTRIBUTION}
+    shown = {r.posting.source for r in d.rows}
+    return [table[s] for s in ("adzuna", "himalayas", "hn") if s in shown]
+
+
 # ------------------------------------------------------------------ markdown
 
 def to_markdown(d: Digest) -> str:
@@ -194,8 +204,8 @@ def to_markdown(d: Digest) -> str:
     for r in skips:
         lines.append(f"- [{_md(r.posting.title)}]({r.posting.url}), {_md(r.posting.company)}: {rule_text(r.rule)}")
     lines += ["", "</details>", ""]
-    if any(r.posting.source == "adzuna" for r in d.rows):
-        lines += ["Some listings: [Jobs by Adzuna](https://www.adzuna.com).", ""]
+    for text, url in credits(d):
+        lines += [f"[{text}]({url})", ""]
     return "\n".join(lines)
 
 
@@ -261,8 +271,8 @@ def to_html(d: Digest) -> str:
         parts.append(f'<li><a href="{e(p.url)}" target="_blank" rel="noopener">{e(p.title)}</a>, '
                      f"{e(p.company)}: {e(rule_text(r.rule))}</li>")
     parts.append("</ul></details>")
-    if any(r.posting.source == "adzuna" for r in d.rows):
-        parts.append('<p class=foot>Some listings: <a href="https://www.adzuna.com">Jobs by Adzuna</a>.</p>')
+    for text, url in credits(d):
+        parts.append(f'<p class=foot><a href="{e(url)}">{e(text)}</a></p>')
     parts.append("</main></body></html>")
     return "\n".join(parts)
 
