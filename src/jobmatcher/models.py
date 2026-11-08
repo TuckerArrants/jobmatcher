@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import re
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from typing import Any
@@ -38,6 +39,8 @@ def parse_time(value: Any) -> datetime | None:
         seconds = value / 1000 if value > 1e11 else value
         return datetime.fromtimestamp(seconds, tz=timezone.utc)
     text = str(value).strip().replace("Z", "+00:00")
+    # Python 3.10 only reads 3 or 6 fractional digits; USAJobs sends 4 ("...59.9970").
+    text = re.sub(r"(\.\d+)", lambda m: "." + (m.group(1)[1:] + "000000")[:6], text, count=1)
     try:
         dt = datetime.fromisoformat(text)
     except ValueError:

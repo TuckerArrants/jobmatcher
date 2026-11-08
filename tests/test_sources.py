@@ -86,3 +86,14 @@ def test_http_404_and_giving_up():
         Http(retries=1, session=_Session([_Resp(500), _Resp(500)]), sleep=lambda s: None).get_json("https://x")
     with pytest.raises(SourceError):  # 403 is not retried
         Http(session=_Session([_Resp(403)]), sleep=lambda s: None).get_json("https://x")
+
+
+def test_parse_time_handles_odd_fractions_on_every_python():
+    from jobmatcher.models import parse_time
+
+    assert parse_time("2026-11-05T23:59:59.9970").microsecond == 997000  # USAJobs, 4 digits
+    assert parse_time("2026-11-02T00:00:00.0000").day == 2
+    assert parse_time("2026-10-20T00:00:00.000+00:00").month == 10
+    assert parse_time("2026-11-01T12:00:00.1234567Z").microsecond == 123456
+    assert parse_time("2026-11-01").year == 2026
+    assert parse_time(1793836000000).year == 2026 and parse_time("nonsense") is None
