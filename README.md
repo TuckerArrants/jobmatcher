@@ -22,13 +22,24 @@ classifier agrees with your own judgement is measured on a held-out set of your 
 If you would rather your key never touch GitHub, skip steps 3 and 4. The scheduled workflow does
 nothing without the secret. Instead:
 
-```powershell
+**Windows, no command line:**
+1. Install Python from python.org (tick *Add python.exe to PATH*) and GitHub Desktop.
+2. In GitHub Desktop, sign in, then use *File → Clone repository* to clone your private copy.
+3. Click *Show in Explorer*, then double-click `windows-setup.bat`. It installs everything and
+   opens Notepad so you can paste your key.
+4. Double-click `windows-run.bat` whenever you want a run.
+
+To get updates, click *Fetch origin*, then *Pull origin* in GitHub Desktop. If an update adds a
+new dependency, double-click `windows-setup.bat` again; this is safe and keeps your key.
+
+**macOS / Linux:**
+
+```bash
 git clone https://github.com/YOU/YOUR-PRIVATE-COPY.git
 cd YOUR-PRIVATE-COPY
-python -m venv .venv
-.venv\Scripts\activate          # macOS / Linux: source .venv/bin/activate
+python3 -m venv .venv && source .venv/bin/activate
 pip install -e .
-copy env.example .env           # macOS / Linux: cp env.example .env ; then put your key in .env
+cp env.example .env             # then put your key in .env
 jobmatch run
 ```
 
