@@ -163,6 +163,16 @@ class Store:
         return {r["posting_id"]: r["label"] for r in self.db.execute("SELECT * FROM labels")}
 
     # ------------------------------------------------------------------ runs
+    def runs(self, command: str, since: str | None = None) -> list[sqlite3.Row]:
+        """Runs of one command, oldest first, optionally only those after ``since``."""
+        if since:
+            q = "SELECT * FROM runs WHERE command = ? AND started_at > ? ORDER BY id"
+            return list(self.db.execute(q, (command, since)))
+        return list(self.db.execute("SELECT * FROM runs WHERE command = ? ORDER BY id", (command,)))
+
+    def latest_seen(self) -> str | None:
+        return self.db.execute("SELECT MAX(last_seen) FROM postings").fetchone()[0]
+
     def record_run(self, command: str, counts: dict[str, Any], cost_usd: float = 0.0) -> None:
         with self.tx() as db:
             db.execute(

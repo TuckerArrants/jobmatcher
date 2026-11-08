@@ -13,6 +13,7 @@ if not exist ".venv\Scripts\jobmatch.exe" (
 
 if "%~1"=="" (
   ".venv\Scripts\jobmatch.exe" run
+  if exist "user\reports\latest.html" start "" "user\reports\latest.html"
 ) else (
   ".venv\Scripts\jobmatch.exe" %*
 )

@@ -4,8 +4,8 @@ A vibe coded weekend project. Collects job postings from free public job boards,
 the rest as **apply / consider / skip** for one person, and delivers a ranked digest. How well the
 classifier agrees with your own judgement is measured on a held-out set of your labels.
 
-> Status: under construction. Ingest, the prefilter and the classifier work; the daily report,
-> setup wizard and evaluation are next. The quickstart below describes the finished tool.
+> Status: under construction. Ingest, the prefilter, the classifier and the daily report work;
+> the setup wizard and evaluation are next. The quickstart below describes the finished tool.
 
 ## Quickstart
 
@@ -73,7 +73,8 @@ No scraping of LinkedIn, Indeed, Glassdoor or any other site whose terms forbid 
 
 | command | what it does |
 |---|---|
-| `jobmatch run` | ingest, then classify the new postings that passed the prefilter |
+| `jobmatch run` | ingest, classify the new postings that passed the prefilter, write the report |
+| `jobmatch report` | write the digest to `user/reports/` (`YYYY-MM-DD.md`, `.html`, and `latest.html`); `--all` lists every open posting, not only new ones |
 | `jobmatch ingest` | fetch every board once, store new postings, apply the prefilter |
 | `jobmatch classify --dry-run` | show how many postings would be sent and the estimated cost; send nothing. The first request body is written to `user/cache/dry-run-example.json` |
 | `jobmatch classify --limit 100` | classify at most 100 postings, newest first |
@@ -83,6 +84,17 @@ No scraping of LinkedIn, Indeed, Glassdoor or any other site whose terms forbid 
 `classify` and `run` refuse to start when the estimated cost is above `--max-cost` (default
 $1.00). Every answer is cached, so a posting is never paid for twice. Editing your profile makes
 earlier answers stale, so those postings are asked again.
+
+## The report
+
+Each run writes `user/reports/latest.html` (on Windows, `windows-run.bat` opens it). It has Apply
+and Consider sections, ranked, and a collapsed list of Skips. Each posting shows its company,
+location, pay, posting date, the classifier's sub-scores, the rule that decided it, and which
+resume version to send (from `user/resumes.yaml`). By default a report lists only postings that
+are new since the previous report.
+
+Labels are re-decided from the stored answers every time a report is written, so editing
+thresholds in `user/decision.yaml` changes the labels without paying to classify again.
 
 ## The classifier
 

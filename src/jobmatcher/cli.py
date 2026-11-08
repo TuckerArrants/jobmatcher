@@ -117,12 +117,31 @@ def _cmd_classify(args: argparse.Namespace) -> int:
     return 1 if res.failed else 0
 
 
+def _cmd_report(args: argparse.Namespace) -> int:
+    from jobmatcher import report
+    from jobmatcher.store import Store
+
+    paths = Paths.from_env(args.user_dir)
+    store = Store(paths.db)
+    try:
+        digest, md_path = report.write(paths, store, show_all=getattr(args, "all", False))
+    finally:
+        store.close()
+    n = {k: len(digest.by_label(k)) for k in ("apply", "consider", "skip")}
+    out.info(f"report: apply {n['apply']}, consider {n['consider']}, skip {n['skip']}")
+    out.detail(f"written to {md_path.parent / 'latest.html'} and {md_path}")
+    return 0
+
+
 def _cmd_run(args: argparse.Namespace) -> int:
-    """The scheduled pipeline: ingest -> classify -> (report, next milestone)."""
+    """The full pipeline: ingest -> classify -> report."""
     code = _cmd_ingest(args)
     if code:
         return code
-    return _cmd_classify(args)
+    code = _cmd_classify(args)
+    if code not in (0, 1):  # 1 = some postings failed; still report the rest
+        return code
+    return _cmd_report(args) or code
 
 
 def _add_classify_args(s: argparse.ArgumentParser) -> None:
@@ -166,8 +185,13 @@ def build_parser() -> argparse.ArgumentParser:
     _add_classify_args(s)
     s.set_defaults(func=_cmd_classify)
 
-    s = sub.add_parser("run", help="the full pipeline: ingest, then classify")
+    s = sub.add_parser("report", help="write the digest to user/reports/")
+    s.add_argument("--all", action="store_true", help="every open posting, not only new ones")
+    s.set_defaults(func=_cmd_report)
+
+    s = sub.add_parser("run", help="the full pipeline: ingest, classify, report")
     _add_classify_args(s)
+    s.add_argument("--all", action="store_true", help="report every open posting, not only new ones")
     s.set_defaults(func=_cmd_run)
 
     s = sub.add_parser("privacy-check", help="fail if personal data, databases or keys are tracked")
