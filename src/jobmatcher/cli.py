@@ -173,6 +173,33 @@ def _add_classify_args(s: argparse.ArgumentParser) -> None:
                    help="refuse to start if the estimated cost is above this many dollars (default 1.00)")
 
 
+def _cmd_label(args: argparse.Namespace) -> int:
+    from jobmatcher.classify import build_classifier
+    from jobmatcher.label import Session, serve
+    from jobmatcher.store import Store
+
+    paths = Paths.from_env(args.user_dir)
+    store = Store(paths.db)
+    session = Session(paths, store, build_classifier(paths, offline=True).name, target=args.target)
+    st = session.stats()
+    if not st["available"]:
+        out.error("nothing to label yet: run `jobmatch run` first")
+        return 2
+    server = serve(session, port=args.port, open_browser=not args.no_browser)
+    out.info(f"labeling page: http://127.0.0.1:{server.server_address[1]}/  "
+             f"({st['labeled']} labeled so far, {st['available']} available)")
+    out.info("Your labels are saved as you go. Close this window when you are done.")
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        server.server_close()
+        out.info(f"labeled: {session.stats()['labeled']}")
+        store.close()
+    return 0
+
+
 def _cmd_privacy(args: argparse.Namespace) -> int:
     from jobmatcher import privacy
 
@@ -210,6 +237,12 @@ def build_parser() -> argparse.ArgumentParser:
     s = sub.add_parser("report", help="write the digest to user/reports/")
     s.add_argument("--all", action="store_true", help="every open posting, not only new ones")
     s.set_defaults(func=_cmd_report)
+
+    s = sub.add_parser("label", help="label postings in your browser (apply / consider / skip)")
+    s.add_argument("--port", type=int, default=0, help="local port (default: any free port)")
+    s.add_argument("--target", type=int, default=150, help="labeling goal shown on the page")
+    s.add_argument("--no-browser", action="store_true", help="print the address instead of opening it")
+    s.set_defaults(func=_cmd_label)
 
     s = sub.add_parser("discover", help="add boards of relevant employers found by searches")
     s.set_defaults(func=_cmd_discover)

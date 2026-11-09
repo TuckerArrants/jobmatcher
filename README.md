@@ -78,6 +78,7 @@ No scraping of LinkedIn, Indeed, Glassdoor or any other site whose terms forbid 
 | `jobmatch ingest` | fetch every board once, store new postings, apply the prefilter |
 | `jobmatch classify --dry-run` | show how many postings would be sent and the estimated cost; send nothing. The first request body is written to `user/cache/dry-run-example.json` |
 | `jobmatch classify --limit 100` | classify at most 100 postings, newest first |
+| `jobmatch label` | open a labeling page in your browser: one posting at a time, apply / consider / skip (keys A / C / S). On Windows: `windows-label.bat` |
 | `jobmatch find-board "Name"` | find a company's public board; `--file names.txt --write` adds many to `companies.yaml` |
 | `jobmatch privacy-check` | fail if personal data, databases or keys are tracked |
 
@@ -95,6 +96,15 @@ are new since the previous report.
 
 Labels are re-decided from the stored answers every time a report is written, so editing
 thresholds in `user/decision.yaml` changes the labels without paying to classify again.
+
+## Labeling and evaluation
+
+`jobmatch label` opens a page on your own machine (127.0.0.1 only) that shows one classified
+posting at a time, without the classifier's answer, so it cannot sway you. Labels go to
+`user/labels.csv`. Postings are drawn from the classifier's apply, consider and skip groups in
+turn, in a fixed shuffled order, so the rare "apply" predictions are well covered. Each label
+records which group it came from, so evaluation can weight the groups correctly. Aim for about
+150 labels; you can stop and resume at any time.
 
 ## The classifier
 

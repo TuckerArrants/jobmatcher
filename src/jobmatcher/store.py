@@ -66,7 +66,9 @@ class Store:
         self.path = Path(path)
         if str(path) != ":memory:":
             self.path.parent.mkdir(parents=True, exist_ok=True)
-        self.db = sqlite3.connect(str(path))
+        # check_same_thread=False: the labeling server answers on its own thread; it serves one
+        # request at a time, so access is never concurrent.
+        self.db = sqlite3.connect(str(path), check_same_thread=False)
         self.db.row_factory = sqlite3.Row
         self.db.executescript(SCHEMA)
 
